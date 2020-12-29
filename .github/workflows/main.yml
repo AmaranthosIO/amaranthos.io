@@ -1,7 +1,6 @@
-# This is a basic workflow to help you get started with Actions
+name: Deploy to GitHub Pages
 
-name: Deploy to Github Pages
-# run on every push to homepages
+# Run workflow on every push to the master branch
 on:
   push:
     branches: [ homepages ]
@@ -11,29 +10,28 @@ jobs:
     # use ubuntu-latest image to run steps on
     runs-on: ubuntu-latest
     steps:
-
     # uses GitHub's checkout action to checkout code form the master branch
     - uses: actions/checkout@v2
       with:
-          ref: homepages
+        ref: homepages
     
     # sets up .NET Core SDK 5.0
     - name: Setup .NET Core SDK
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 5.0
-        
-    # publishes Blazor project to the release-folder
-    - name: Publish Blazor Site
-      run: dotnet publish gh-pages.csproj -c Release -o release --nologo
 
+    # publishes Blazor project to the release-folder
+    - name: Publish .NET Core Project
+      run: dotnet publish gh-pages.csproj -c Release -o release --nologo
+    
+    # add .nojekyll file to tell GitHub pages to not treat this as a Jekyll project. (Allow files and folders starting with an underscore)
+    - name: Add .nojekyll file
+      run: touch release/wwwroot/.nojekyll
+      
     - name: Commit wwwroot to GitHub Pages
       uses: JamesIves/github-pages-deploy-action@3.7.1
       with:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         BRANCH: gh-pages
         FOLDER: release/wwwroot
-
-    # add .nojekyll file to tell GitHub pages to not treat this as a Jekyll project. (Allow files and folders starting with an underscore)
-    - name: Add .nojekyll file
-      run: touch release/wwwroot/.nojekyll
