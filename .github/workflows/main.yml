@@ -13,15 +13,17 @@ jobs:
     steps:
 
     # uses GitHub's checkout action to checkout code from the homepages branch
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v2.3.1
       with:
         ref: homepages
-    
+        # If you're using actions/checkout@v2 you must set persist-credentials to false in most cases for the deployment to work correctly.
+        persist-credentials: false
+
     # sets up .NET Core SDK 5.0
     - name: Setup .NET Core SDK
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 5.0
+        dotnet-version: 5.0.200
 
     # publishes Blazor project to the release-folder
     - name: Publish .NET Core Project
